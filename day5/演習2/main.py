@@ -187,7 +187,7 @@ class ModelTester:
     def save_model(model, path="models/titanic_model.pkl"):
         model_dir = "models"
         os.makedirs(model_dir, exist_ok=True)
-        model_path = os.path.join(model_dir, f"titanic_model.pkl")
+        model_path = os.path.join(model_dir, "titanic_model.pkl")
         with open(model_path, "wb") as f:
             pickle.dump(model, f)
         return path
@@ -204,6 +204,12 @@ class ModelTester:
         """ベースラインと比較する"""
         return current_metrics["accuracy"] >= baseline_threshold
 
+    @staticmethod
+    def evaluate_inference_reproducibility(model, X_test, threshold=0.75):
+        """推論の再現性を評価する"""
+        y_pred1 = model.predict(X_test)
+        y_pred2 = model.predict(X_test)
+        return (y_pred1 == y_pred2).mean()
 
 # テスト関数（pytestで実行可能）
 def test_data_validation():
@@ -247,6 +253,12 @@ def test_model_performance():
     assert (
         metrics["inference_time"] < 1.0
     ), f"推論時間が長すぎます: {metrics['inference_time']}秒"
+
+    # 推論の再現性の確認
+    replicability = ModelTester.evaluate_inference_reproducibility(model, X_test)
+    assert (
+        replicability > 0.95
+    ), f"推論の再現性が低いです: {replicability}"
 
 
 if __name__ == "__main__":
