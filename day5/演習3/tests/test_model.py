@@ -172,6 +172,7 @@ def test_model_reproducibility(sample_data, preprocessor):
         predictions1, predictions2
     ), "モデルの予測結果に再現性がありません"
 
+
 def test_compare_with_privious_model(train_model):
     """以前のモデルと比較する"""
     new_model, X_test, y_test = train_model
@@ -184,6 +185,6 @@ def test_compare_with_privious_model(train_model):
     prev_y_pred = prev_model.predict(X_test)
     prev_accuracy = accuracy_score(y_test, prev_y_pred)
     # 新しいモデルの精度が以前のモデルよりも高いことを確認
-    assert new_accuracy >= prev_accuracy - 0.02, (
-        f"過去のモデルと比べて性能が劣化しています: {prev_accuracy} -> {new_accuracy}"
-    )
+    assert (
+        new_accuracy >= prev_accuracy - 0.02
+    ), f"過去のモデルと比べて性能が劣化しています: {prev_accuracy} -> {new_accuracy}"
